@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "946499976227",
+    "project_id": "biteontime-8315",
+    "storage_bucket": "biteontime-8315.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946499976227:android:07a5ba0c41e5f059284596",
+        "android_client_info": {
+          "package_name": "com.example.food_ui"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVrj4Dnaw0_RwzsD0hxsialqNUfgkwCuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
