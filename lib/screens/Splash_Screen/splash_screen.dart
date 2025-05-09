@@ -1,15 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:food_ui/admin_panel/admin_panel_home.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../deleviry_boy/delivery_boy_screen.dart';
-import '../navbar/navbar.dart';
-import 'on_bording.dart';
-import '../login_sign_up/pre_login.dart';
+import '../../login_sign_up/pre_login.dart';
+import '../On_Bording/on_bording.dart';
+import '../../controller/auth_controller.dart'; // Import AuthController
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -58,41 +54,27 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 
   void _navigateToNextScreen() {
-    Future.delayed(const Duration(seconds: 5), () async {
-      bool hasSeenOnboarding = box.read('hasSeenOnboarding') ?? false;
-      User? user = FirebaseAuth.instance.currentUser;
+    Future.delayed(const Duration(seconds: 5), () {
+      // Get the AuthController instance
+      final authController = Get.find<AuthController>();
 
-      if (user != null) {
-        String? role = await _getUserRole(user.uid);
-        if (role == "admin") {
-          Get.off(() => AdminPanelScreen());
-        } else if (role == "delivery") {
-          Get.off(() => DeliveryBoyScreen());
-        } else {
-          Get.off(() => CustomBottomNavBar());
-        }
+      // Check if a user is logged in
+      if (authController.firebaseUser.value != null) {
+        print('User is logged in, skipping navigation from SplashScreen');
+        return; // Do not navigate; let AuthController handle it
+      }
+
+      // If no user is logged in, proceed with onboarding or PreLogin
+      bool hasSeenOnboarding = box.read('hasSeenOnboarding') ?? false;
+      if (hasSeenOnboarding) {
+        print('Navigating to PreLogin from SplashScreen');
+        Get.off(() => PreLogin());
       } else {
-        if (hasSeenOnboarding) {
-          Get.off(() => PreLogin());
-        } else {
-          box.write('hasSeenOnboarding', true);
-          Get.off(() => OnboardingScreen());
-        }
+        box.write('hasSeenOnboarding', true);
+        print('Navigating to OnboardingScreen from SplashScreen');
+        Get.off(() => OnboardingScreen());
       }
     });
-  }
-
-  Future<String?> _getUserRole(String userId) async {
-    try {
-      DocumentSnapshot userDoc =
-      await FirebaseFirestore.instance.collection('users').doc(userId).get();
-      if (userDoc.exists) {
-        return userDoc['role'];
-      }
-      return null;
-    } catch (e) {
-      return null;
-    }
   }
 
   @override
@@ -117,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                 child: Image.asset(
                   "assets/images/logo/logo.png",
                   color: Color(0xffff380e),
-                  height: MediaQuery.of(context).size.width * 0.4, // Responsive
+                  height: MediaQuery.of(context).size.width * 0.4,
                   width: MediaQuery.of(context).size.width * 0.4,
                 ),
               ),

@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controller/address_controller.dart';
-import '../controller/auth_controller.dart';
-import '../widgets/custom_btn.dart';
+import '../../../controller/address_controller.dart';
+import '../../../controller/auth_controller.dart';
+import '../../../widgets/custom_btn.dart';
 
 class AddNewAddressPage extends StatelessWidget {
 final TextEditingController nameController = TextEditingController();

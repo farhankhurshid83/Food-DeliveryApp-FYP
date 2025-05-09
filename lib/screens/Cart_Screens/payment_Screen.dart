@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controller/cart_controller.dart';
-import '../controller/order_controller.dart' as oc;
-import '../widgets/custom_btn.dart';
+import '../../controller/cart_controller.dart';
+import '../../controller/order_controller.dart' as oc;
+import '../../widgets/custom_btn.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PaymentPage extends StatefulWidget {

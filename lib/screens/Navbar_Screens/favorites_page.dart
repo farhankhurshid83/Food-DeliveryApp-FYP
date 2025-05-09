@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../controller/favoritesController.dart';
-import '../controller/product_update _controller.dart';
-import 'detail_page.dart';
+import '../../../controller/favoritesController.dart';
+import '../../../controller/product_update _controller.dart';
+import '../Home_Screen/Pages/detail_page.dart';
 
 class FavoriteScreen extends StatelessWidget {
   final FavoritesController favoritesController = Get.find<FavoritesController>();

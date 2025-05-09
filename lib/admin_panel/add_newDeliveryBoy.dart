@@ -19,14 +19,18 @@ class _AddDeliveryBoyScreenState extends State<AddDeliveryBoyScreen> {
 
   Future<void> _addDeliveryBoy() async {
     if (!_formKey.currentState!.validate()) return;
+
     setState(() => _isLoading = true);
     try {
-      bool success = await _authController.addDeliveryBoy(
+      // Call the AuthController to store delivery boy credentials
+      bool success = await _authController.storeDeliveryBoyCredentials(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         fullName: _nameController.text.trim(),
       );
+
       if (success) {
+        // Show success dialog
         await showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -35,7 +39,7 @@ class _AddDeliveryBoyScreenState extends State<AddDeliveryBoyScreen> {
               'Success',
               style: TextStyle(color: Colors.green),
             ),
-            content: const Text('New delivery boy added successfully.'),
+            content: const Text('Delivery boy credentials stored successfully.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -47,12 +51,58 @@ class _AddDeliveryBoyScreenState extends State<AddDeliveryBoyScreen> {
             ],
           ),
         );
+
+        // Clear form fields
         _nameController.clear();
         _emailController.clear();
         _passwordController.clear();
+      } else {
+        // Show error dialog if storage fails
+        await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            title: const Text(
+              'Error',
+              style: TextStyle(color: Colors.red),
+            ),
+            content: const Text('Failed to store delivery boy credentials.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: Colors.orange),
+                ),
+              ),
+            ],
+          ),
+        );
       }
+    } catch (e) {
+      // Handle any errors and show error dialog
+      await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              title: const Text(
+                'Error',
+                style: TextStyle(color: Colors.red),
+              ),
+              content: Text('An error occurred: $e'),
+              actions: [
+              TextButton(
+              onPressed: () => Navigator.pop(context),
+    child: const Text(
+    'OK',
+    style: TextStyle(color: Colors.orange),
+    ),
+    ),
+    ]
+          )
+    );
     } finally {
-      setState(() => _isLoading = false);
+    setState(() => _isLoading = false);
     }
   }
 

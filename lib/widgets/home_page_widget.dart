@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../screens/detail_page.dart';
+import '../screens/Home_Screen/Pages/detail_page.dart';
 
 void navigateToDetail(
     BuildContext context,

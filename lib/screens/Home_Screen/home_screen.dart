@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
-import '../controller/product_update _controller.dart';
-import '../models/product_model.dart';
-import '../widgets/home_page_widget.dart';
-import '../widgets/promotional_banner.dart';
-import 'see_more_best_sellers_page.dart';
+import '../../../../controller/product_update _controller.dart';
+import '../../../../models/product_model.dart';
+import '../../../../widgets/home_page_widget.dart';
+import '../../../../widgets/promotional_banner.dart';
+import 'Pages/see_more_best_sellers_page.dart';
 
 class HomePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -153,6 +153,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   ),
                   labelColor: Colors.orange,
                   unselectedLabelColor: Colors.white,
+                  splashFactory: NoSplash.splashFactory, // Disable splash effect
+                  overlayColor: WidgetStateProperty.all(Colors.transparent), // Disable highlight
                   tabs: categories.map((category) {
                     return Tab(
                       child: SizedBox(

@@ -2,23 +2,46 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:food_ui/screens/splash_screen.dart';
+import 'package:food_ui/screens/Splash_Screen/splash_screen.dart';
 import 'package:food_ui/controller/cart_controller.dart';
 import 'package:food_ui/controller/address_controller.dart';
 import 'package:food_ui/controller/auth_controller.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:hive_ce_flutter/adapters.dart';
+import 'Chat_System/Classes/timestamp_adapter.dart';
+import 'Chat_System/Classes/user_cache.dart';
 import 'controller/chat_controller.dart';
 import 'controller/favoritesController.dart';
 import 'controller/order_controller.dart';
 import 'controller/product_detail_controller.dart';
 import 'controller/product_update _controller.dart';
 import 'controller/user_controller.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
   await GetStorage.init(); // Initialize GetStorage
+  await Hive.initFlutter();
+  Hive.registerAdapter(TimestampAdapter());
+  await UserCache.init();
+
+  // Initialize Awesome Notifications
+  await AwesomeNotifications().initialize(
+    'resource://mipmap/ic_launcher', // Use mipmap for launcher icon
+    [
+      NotificationChannel(
+        channelKey: 'order_notifications',
+        channelName: 'Order Notifications',
+        channelDescription: 'Notifications for order updates',
+        defaultColor: Colors.orange,
+        ledColor: Colors.white,
+        importance: NotificationImportance.High,
+      ),
+    ],
+    debug: true,
+  );
 
   // Initialize GetX controllers
   Get.put(AuthController());

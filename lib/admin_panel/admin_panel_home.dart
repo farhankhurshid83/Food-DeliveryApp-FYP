@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:food_ui/screens/chats/admin_chat_list_screen.dart';
 import 'package:get/get.dart';
+import '../Chat_System/admin_chat_list_screen.dart';
 import '../controller/auth_controller.dart';
 import '../controller/chat_controller.dart';
 import '../widgets/admin_card.dart';

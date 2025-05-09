@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
-import '../controller/product_update _controller.dart';
-import '../models/product_model.dart';
-import '../widgets/home_page_widget.dart';
+import '../../../../../controller/product_update _controller.dart';
+import '../../../../../models/product_model.dart';
+import '../../../../../widgets/home_page_widget.dart';
 
 class SeeMoreBestSellersPage extends StatelessWidget {
   final String category;

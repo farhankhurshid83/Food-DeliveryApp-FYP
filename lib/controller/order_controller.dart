@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import '../services/notification_services.dart';
 
 class Order {
   final String id;
@@ -55,10 +56,10 @@ class OrderController extends GetxController {
   var orders = <Order>[].obs;
   var filter = 'All'.obs; // Filter state: All, Today, Tomorrow, Last Week
 
-
   @override
   void onInit() {
     super.onInit();
+    AwesomeNotificationService.init(); // Initialize notifications
     fetchOrders();
   }
 
@@ -68,7 +69,7 @@ class OrderController extends GetxController {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .listen(
-      (snapshot) {
+          (snapshot) {
         orders.value = snapshot.docs
             .map((doc) => Order.fromMap(doc.id, doc.data()))
             .toList();
@@ -135,16 +136,14 @@ class OrderController extends GetxController {
         'isAccepted': false,
         'createdAt': FieldValue.serverTimestamp(),
       });
-// await NotificationService.showNotification(
-//   id: _notificationIdCounter++,
-//   title: 'New Order #${orderRef.id.substring(orderRef.id.length - 6)}',
-//   body: 'A new order of Rs ${total.toStringAsFixed(2)} is pending.',
-// );
-// await NotificationService.showNotification(
-//   id: _notificationIdCounter++,
-//   title: 'Order Placed',
-//   body: 'Your order #${orderRef.id.substring(orderRef.id.length - 6)} is pending payment.',
-// );
+      await AwesomeNotificationService.showNotification(
+        title: 'New Order #${orderRef.id.substring(orderRef.id.length - 6)}',
+        body: 'A new order of Rs ${total.toStringAsFixed(2)} is pending.',
+      );
+      await AwesomeNotificationService.showNotification(
+        title: 'Order Placed',
+        body: 'Your order #${orderRef.id.substring(orderRef.id.length - 6)} is pending payment.',
+      );
       return orderRef.id;
     } catch (e) {
       Get.snackbar('Error', 'Failed to place order: $e');
@@ -158,11 +157,10 @@ class OrderController extends GetxController {
           .collection('orders')
           .doc(orderId)
           .update({'status': 'Cancelled'});
-// await NotificationService.showNotification(
-//   id: _notificationIdCounter++,
-//   title: 'Order Cancelled',
-//   body: 'Order #${orderId.substring(orderId.length - 6)} has been cancelled.',
-// );
+      await AwesomeNotificationService.showNotification(
+        title: 'Order Cancelled',
+        body: 'Order #${orderId.substring(orderId.length - 6)} has been cancelled.',
+      );
     } catch (e) {
       Get.snackbar('Error', 'Failed to cancel order: $e');
       rethrow;
@@ -175,11 +173,10 @@ class OrderController extends GetxController {
           .collection('orders')
           .doc(orderId)
           .update({'status': 'Rejected'});
-// await NotificationService.showNotification(
-//   id: _notificationIdCounter++,
-//   title: 'Order Rejected',
-//   body: 'Order #${orderId.substring(orderId.length - 6)} has been rejected.',
-// );
+      await AwesomeNotificationService.showNotification(
+        title: 'Order Rejected',
+        body: 'Order #${orderId.substring(orderId.length - 6)} has been rejected.',
+      );
     } catch (e) {
       Get.snackbar('Error', 'Failed to reject order: $e');
       rethrow;
@@ -196,16 +193,14 @@ class OrderController extends GetxController {
         'isAccepted': true,
         'status': 'Accepted',
       });
-// await NotificationService.showNotification(
-//   id: _notificationIdCounter++,
-//   title: 'New Assignment',
-//   body: 'You are assigned to order #${orderId.substring(orderId.length - 6)}.',
-// );
-// await NotificationService.showNotification(
-//   id: _notificationIdCounter++,
-//   title: 'Order Accepted',
-//   body: 'Your order #${orderId.substring(orderId.length - 6)} has been accepted.',
-// );
+      await AwesomeNotificationService.showNotification(
+        title: 'New Assignment',
+        body: 'You are assigned to order #${orderId.substring(orderId.length - 6)}.',
+      );
+      await AwesomeNotificationService.showNotification(
+        title: 'Order Accepted',
+        body: 'Your order #${orderId.substring(orderId.length - 6)} has been accepted.',
+      );
     } catch (e) {
       Get.snackbar('Error', 'Failed to accept order: $e');
       rethrow;
@@ -218,16 +213,14 @@ class OrderController extends GetxController {
           .collection('orders')
           .doc(orderId)
           .update({'paymentStatus': 'paid'});
-// await NotificationService.showNotification(
-//   id: _notificationIdCounter++,
-//   title: 'Payment Confirmed',
-//   body: 'Payment for order #${orderId.substring(orderId.length - 6)} has been confirmed.',
-// );
-// await NotificationService.showNotification(
-//   id: _notificationIdCounter++,
-//   title: 'Payment Received',
-//   body: 'Payment for order #${orderId.substring(orderId.length - 6)} is confirmed.',
-// );
+      await AwesomeNotificationService.showNotification(
+        title: 'Payment Confirmed',
+        body: 'Payment for order #${orderId.substring(orderId.length - 6)} has been confirmed.',
+      );
+      await AwesomeNotificationService.showNotification(
+        title: 'Payment Received',
+        body: 'Payment for order #${orderId.substring(orderId.length - 6)} is confirmed.',
+      );
     } catch (e) {
       Get.snackbar('Error', 'Failed to confirm payment: $e');
       rethrow;

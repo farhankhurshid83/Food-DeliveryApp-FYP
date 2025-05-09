@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../controller/favoritesController.dart';
-import '../controller/product_detail_controller.dart';
+import '../../../controller/favoritesController.dart';
+import '../../../controller/product_detail_controller.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final Map<String, dynamic> product;

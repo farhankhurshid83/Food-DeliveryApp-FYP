@@ -6,7 +6,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.3.0 <4.0.0" # Ensure compatibility with latest Flutter
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -23,20 +23,23 @@ dependencies:
   cached_network_image: ^3.4.1
   firebase_crashlytics: ^4.3.5
   url_launcher: ^6.1.10
-#  flutter_local_notifications: ^19.1.0
   flutter_image_compress: ^2.0.0
   google_fonts: ^6.2.1
   carousel_slider: ^5.0.0
   badges: ^3.1.2
   shared_preferences: ^2.5.3
   emoji_picker_flutter: ^4.3.0
-
+  awesome_notifications: ^0.10.1
+  hive_ce_flutter: ^2.3.0
+  curved_navigation_bar: ^1.0.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.3
+  hive_ce_generator: ^1.9.1
+  build_runner: ^2.4.15
 
 flutter:
   uses-material-design: true
@@ -44,6 +47,8 @@ flutter:
   assets:
     - assets/images/
     - assets/images/logo/
+    - assets/icon/ # Include icon folder for notification icon
+
 flutter_launcher_icons:
   android: true
   ios: true

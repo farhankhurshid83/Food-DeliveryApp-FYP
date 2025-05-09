@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:food_ui/screens/payment_Screen.dart';
+import 'package:food_ui/screens/Cart_Screens/payment_Screen.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../controller/address_controller.dart';
-import '../controller/auth_controller.dart';
-import '../controller/cart_controller.dart';
-import '../controller/order_controller.dart' as oc;
-import '../widgets/custom_btn.dart';
-import 'adress_page.dart';
+import '../../controller/address_controller.dart';
+import '../../controller/auth_controller.dart';
+import '../../controller/cart_controller.dart';
+import '../../controller/order_controller.dart' as oc;
+import '../../widgets/custom_btn.dart';
+import '../Drawer/drawerPages/adress_page.dart';
 
 class ConfirmOrderPage extends StatelessWidget {
   final CartController cartController = Get.find<CartController>();

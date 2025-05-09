@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controller/address_controller.dart';
-import '../widgets/custom_btn.dart';
+import '../../../controller/address_controller.dart';
+import '../../../widgets/custom_btn.dart';
 import 'new_delivery adress.dart';
 
 class AddressListPage extends StatelessWidget {

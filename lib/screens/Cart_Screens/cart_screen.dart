@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../controller/cart_controller.dart';
-import '../widgets/custom_btn.dart';
+import '../../../controller/cart_controller.dart';
+import '../../../widgets/custom_btn.dart';
 import 'confirm_order.dart';
 
 class CartPage extends StatelessWidget {

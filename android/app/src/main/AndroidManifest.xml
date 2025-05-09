@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Add notification permission for Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:label="BiteOnTime"
         android:name="${applicationName}"
@@ -20,10 +23,21 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- Optional: Receiver for awesome_notifications actions -->
+        <receiver
+            android:name="com.rafaelalbuquerque.awesome_notifications.core.broadcasters.receivers.AwesomeNotificationsBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.rafaelalbuquerque.awesome_notifications.NOTIFICATION_ACTION" />
+            </intent-filter>
+        </receiver>
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
     <queries>
         <!-- For url_launcher to open HTTPS URLs (WhatsApp, social media) -->
         <intent>

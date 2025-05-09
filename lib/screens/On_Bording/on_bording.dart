@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import '../login_sign_up/pre_login.dart';
-import '../widgets/custom_btn.dart';
+import '../../login_sign_up/pre_login.dart';
+import '../../widgets/custom_btn.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
