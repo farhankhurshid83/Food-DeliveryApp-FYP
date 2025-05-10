@@ -32,6 +32,7 @@ dependencies:
   awesome_notifications: ^0.10.1
   hive_ce_flutter: ^2.3.0
   curved_navigation_bar: ^1.0.6
+  firebase_messaging: ^15.2.5
 
 dev_dependencies:
   flutter_test:

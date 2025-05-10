@@ -129,29 +129,93 @@ class ChatController extends GetxController {
     }
   }
 
+  Future<void> setChatDetails({
+    required String conversationId,
+    required String otherParticipantId,
+    required String otherUserRole,
+    required ChatType chatType,
+  }) async {
+    try {
+      // Set chat type and current user ID
+      this.chatType.value = chatType;
+      currentUserId.value = Get.find<AuthController>().userId;
+
+      // Validate current user ID
+      if (currentUserId.value.isEmpty) {
+        throw Exception('Current user ID is empty');
+      }
+
+      // Set participant IDs based on chat type
+      if (chatType == ChatType.order) {
+        orderId.value = conversationId;
+        // Fetch participants from Firestore to determine customerId and deliveryBoyId
+        final convoDoc = await FirebaseFirestore.instance
+            .collection(Constants.chatsCollection)
+            .doc(conversationId)
+            .get();
+        if (!convoDoc.exists) {
+          throw Exception('Chat document does not exist for order #$conversationId');
+        }
+        final participants = List<String>.from(convoDoc.get('participants') ?? []);
+        if (participants.length != 2) {
+          throw Exception('Invalid participants for order chat');
+        }
+        customerId.value = participants.firstWhere(
+              (id) => id != otherParticipantId,
+          orElse: () => '',
+        );
+        deliveryBoyId.value = otherParticipantId;
+      } else if (chatType == ChatType.customerAdmin) {
+        customerId.value = currentUserId.value == adminId.value ? otherParticipantId : currentUserId.value;
+        adminId.value = currentUserId.value == adminId.value ? currentUserId.value : otherParticipantId;
+      } else if (chatType == ChatType.adminDelivery) {
+        deliveryBoyId.value = currentUserId.value == adminId.value ? otherParticipantId : currentUserId.value;
+        adminId.value = currentUserId.value == adminId.value ? currentUserId.value : otherParticipantId;
+      }
+
+      // Fetch and set recipientName for the other participant
+      final userDoc = await FirebaseFirestore.instance
+          .collection(Constants.usersCollection)
+          .doc(otherParticipantId)
+          .get();
+      recipientName.value = userDoc.exists
+          ? userDoc.get('displayName') ?? 'User'
+          : 'User';
+      await UserCache.cacheUser(otherParticipantId, userDoc.data() ?? {});
+      print('Set recipientName to ${recipientName.value} for otherParticipantId: $otherParticipantId, chatType: $chatType');
+
+      // Ensure conversation exists
+      await createConversation(
+        participant1Id: chatType == ChatType.order ? customerId.value : adminId.value,
+        participant2Id: chatType == ChatType.order ? deliveryBoyId.value : otherParticipantId,
+        chatType: chatType,
+        orderId: chatType == ChatType.order ? orderId.value : null,
+      );
+
+      // Reset unread count for the current user
+      await resetUnreadCount(conversationId, currentUserId.value);
+    } catch (e) {
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current,
+          reason: 'Failed to set chat details: $e');
+      Get.snackbar('Error', 'Failed to initialize chat: $e',
+          backgroundColor: Colors.redAccent, colorText: Colors.white);
+      throw e;
+    }
+  }
+
   Future<void> setCustomerAdminChatContext({required String customerId}) async {
     try {
       if (adminId.value.isEmpty) {
-        // Retry loading admin ID as a fallback
         await _loadAdminId();
         if (adminId.value.isEmpty) {
           throw Exception('Admin ID not found. Please ensure an admin user exists.');
         }
       }
-      this.customerId.value = customerId;
-      currentUserId.value = Get.find<AuthController>().userId;
-      chatType.value = ChatType.customerAdmin;
-      final userDoc = await FirebaseFirestore.instance
-          .collection(Constants.usersCollection)
-          .doc(customerId)
-          .get();
-      recipientName.value = userDoc.exists
-          ? userDoc.get('displayName') ?? 'Customer'
-          : 'Customer';
-      await UserCache.cacheUser(customerId, userDoc.data() ?? {});
-      await createConversation(
-        participant1Id: customerId,
-        participant2Id: adminId.value,
+      final otherParticipantId = Get.find<AuthController>().userId == customerId ? adminId.value : customerId;
+      await setChatDetails(
+        conversationId: generateConversationId(customerId, adminId.value),
+        otherParticipantId: otherParticipantId,
+        otherUserRole: otherParticipantId == adminId.value ? 'admin' : 'customer',
         chatType: ChatType.customerAdmin,
       );
     } catch (e) {
@@ -169,62 +233,43 @@ class ChatController extends GetxController {
     required String deliveryBoyId,
   }) async {
     try {
-      this.orderId.value = orderId;
-      this.customerId.value = customerId;
-      this.deliveryBoyId.value = deliveryBoyId;
-      currentUserId.value = Get.find<AuthController>().userId;
-      chatType.value = ChatType.order;
-      final userDoc = await FirebaseFirestore.instance
-          .collection(Constants.usersCollection)
-          .doc(currentUserId.value == customerId ? deliveryBoyId : customerId)
-          .get();
-      recipientName.value =
-      userDoc.exists ? userDoc.get('displayName') ?? 'User' : 'User';
-      await UserCache.cacheUser(userDoc.id, userDoc.data() ?? {});
-      await createConversation(
-        participant1Id: customerId,
-        participant2Id: deliveryBoyId,
+      final otherParticipantId = Get.find<AuthController>().userId == customerId ? deliveryBoyId : customerId;
+      await setChatDetails(
+        conversationId: orderId,
+        otherParticipantId: otherParticipantId,
+        otherUserRole: otherParticipantId == deliveryBoyId ? 'delivery' : 'customer',
         chatType: ChatType.order,
-        orderId: orderId,
       );
     } catch (e) {
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current,
-          reason: 'Failed to set order chat context');
+          reason: 'Failed to set order chat context: $e');
       Get.snackbar('Error', 'Failed to initialize chat: $e',
           backgroundColor: Colors.redAccent, colorText: Colors.white);
+      throw e;
     }
   }
 
   Future<void> setAdminDeliveryChatContext({required String deliveryBoyId}) async {
     try {
       if (adminId.value.isEmpty) {
-        // Retry loading admin ID as a fallback
         await _loadAdminId();
         if (adminId.value.isEmpty) {
           throw Exception('Admin ID not found. Please ensure an admin user exists.');
         }
       }
-      this.deliveryBoyId.value = deliveryBoyId;
-      currentUserId.value = Get.find<AuthController>().userId;
-      chatType.value = ChatType.adminDelivery;
-      final userDoc = await FirebaseFirestore.instance
-          .collection(Constants.usersCollection)
-          .doc(deliveryBoyId)
-          .get();
-      recipientName.value = userDoc.exists
-          ? userDoc.get('displayName') ?? 'Delivery'
-          : 'Delivery';
-      await UserCache.cacheUser(deliveryBoyId, userDoc.data() ?? {});
-      await createConversation(
-        participant1Id: adminId.value,
-        participant2Id: deliveryBoyId,
+      final otherParticipantId = Get.find<AuthController>().userId == deliveryBoyId ? adminId.value : deliveryBoyId;
+      await setChatDetails(
+        conversationId: generateConversationId(adminId.value, deliveryBoyId),
+        otherParticipantId: otherParticipantId,
+        otherUserRole: otherParticipantId == adminId.value ? 'admin' : 'delivery',
         chatType: ChatType.adminDelivery,
       );
     } catch (e) {
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current,
-          reason: 'Failed to set admin-delivery chat context');
+          reason: 'Failed to set admin-delivery chat context: $e');
       Get.snackbar('Error', 'Failed to initialize chat: $e',
           backgroundColor: Colors.redAccent, colorText: Colors.white);
+      throw e;
     }
   }
 

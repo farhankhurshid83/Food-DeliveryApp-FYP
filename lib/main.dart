@@ -40,7 +40,6 @@ void main() async {
         importance: NotificationImportance.High,
       ),
     ],
-    debug: true,
   );
 
   // Initialize GetX controllers

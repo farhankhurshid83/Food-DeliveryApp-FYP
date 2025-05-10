@@ -183,21 +183,7 @@ class OrdersPage extends StatelessWidget {
                   try {
                     await orderController
                         .deleteAllOrders(authController.userId);
-                    Get.snackbar(
-                      "Success",
-                      "All orders deleted successfully.",
-                      backgroundColor: Colors.green,
-                      colorText: Colors.white,
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
                   } catch (e) {
-                    Get.snackbar(
-                      "Error",
-                      "Failed to delete all orders: $e",
-                      backgroundColor: Colors.redAccent,
-                      colorText: Colors.white,
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
                     FirebaseCrashlytics.instance.recordError(
                       e,
                       StackTrace.current,
@@ -385,21 +371,7 @@ class OrdersPage extends StatelessWidget {
                           if (confirm) {
                             try {
                               await orderController.cancelOrder(order.id);
-                              Get.snackbar(
-                                "Order Cancelled",
-                                "Your order has been cancelled.",
-                                backgroundColor: Colors.redAccent,
-                                colorText: Colors.white,
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
                             } catch (e) {
-                              Get.snackbar(
-                                "Error",
-                                "Failed to cancel: $e",
-                                backgroundColor: Colors.redAccent,
-                                colorText: Colors.white,
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
                               FirebaseCrashlytics.instance.recordError(
                                 e,
                                 StackTrace.current,
@@ -416,21 +388,7 @@ class OrdersPage extends StatelessWidget {
                         if (confirm) {
                           try {
                             await orderController.deleteOrder(order.id);
-                            Get.snackbar(
-                              "Order Deleted",
-                              "Order has been deleted successfully.",
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white,
-                              snackPosition: SnackPosition.BOTTOM,
-                            );
                           } catch (e) {
-                            Get.snackbar(
-                              "Error",
-                              "Failed to delete order: $e",
-                              backgroundColor: Colors.redAccent,
-                              colorText: Colors.white,
-                              snackPosition: SnackPosition.BOTTOM,
-                            );
                             FirebaseCrashlytics.instance.recordError(
                               e,
                               StackTrace.current,
